@@ -1,4 +1,4 @@
-# Fortran-Neural-Network
+# Neural Networks in Fortran
 First attempt at programming a neural network with Fortran (GFortran).
 
 The purpose of this project is to:

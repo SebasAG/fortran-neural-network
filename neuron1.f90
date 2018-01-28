@@ -11,9 +11,11 @@ program neuron1
   call n1%feedf((/1.0, 0.0/))
   print *, n1%act(1)
 
-  call save_net_dat
+!  call save_net_dat
 contains
+  
   subroutine save_net_dat
+  !! save network data to a file 'n_data.dat'
     integer, parameter :: n_dat=1
     integer :: i, j
     open(n_dat, file='n_data.dat')

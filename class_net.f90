@@ -10,33 +10,29 @@ module class_net
     procedure :: feedf => feed_forward
   end type net
 
-  ! interface net
-  !   module procedure new_net
-  ! end interface net
 contains
-  ! type(net) function new_net(i, h, o)
-  subroutine init_net(new_net, i, h, o)
-    class(net), intent(inout) :: new_net
+  subroutine init_net(this, i, h, o)
+    class(net), intent(inout) :: this
     integer, intent(in) :: i, h, o
 
-    new_net%i_size = i
-    new_net%h_size = h
-    new_net%o_size = o
+    this%i_size = i
+    this%h_size = h
+    this%o_size = o
 
-    allocate(new_net%h_w(h, i))
-    allocate(new_net%o_w(o, h))
-    allocate(new_net%h_b(h))
-    allocate(new_net%o_b(o))
+    allocate(this%h_w(h, i))
+    allocate(this%o_w(o, h))
+    allocate(this%h_b(h))
+    allocate(this%o_b(o))
 
-    allocate(new_net%h_z(h))
-    allocate(new_net%act(h))
-    allocate(new_net%d_act(h))
-    allocate(new_net%res(o))
+    allocate(this%h_z(h))
+    allocate(this%act(h))
+    allocate(this%d_act(h))
+    allocate(this%res(o))
 
-    call random_number(new_net%h_w)
-    call random_number(new_net%h_b)
-    call random_number(new_net%o_w)
-    call random_number(new_net%o_b)
+    call random_number(this%h_w)
+    call random_number(this%h_b)
+    call random_number(this%o_w)
+    call random_number(this%o_b)
   end subroutine init_net
 
   subroutine feed_forward(this, inputs)

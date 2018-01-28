@@ -8,6 +8,7 @@ module class_net
   contains
     procedure :: init => init_net
     procedure :: feedf => feed_forward
+    procedure :: learn => net_learn
   end type net
 
 contains

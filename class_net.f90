@@ -18,11 +18,13 @@ contains
   !!   it seems gfortran doesn's support this at the time (?)
     class(net), intent(inout) :: this
     integer, intent(in) :: i, h, o
-
+    
+    !! set size of network
     this%i_size = i
     this%h_size = h
     this%o_size = o
 
+    !! allocate memory for weights and biases according to size
     allocate(this%h_w(h, i))
     allocate(this%o_w(o, h))
     allocate(this%h_b(h))
@@ -33,6 +35,8 @@ contains
     allocate(this%d_act(h))
     allocate(this%res(o))
 
+    !! initialize weights and bias with random values in [0,1)
+    !! to do: initialize with gaussian distribution
     call random_number(this%h_w)
     call random_number(this%h_b)
     call random_number(this%o_w)

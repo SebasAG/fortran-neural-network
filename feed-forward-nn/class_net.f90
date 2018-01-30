@@ -4,7 +4,7 @@ module class_net
   type, public :: net
     integer :: i_size, h_size, o_size
     real, allocatable :: h_w(:,:), o_w(:,:), h_b(:), o_b(:), &
-      h_z(:), o_z, h_act(:), o_act(:)
+      h_z(:), o_z(:), h_act(:), o_act(:)
   contains
     procedure :: init => init_net
     procedure :: feedf => feed_forward
@@ -54,7 +54,7 @@ contains
     !! apply activation function (hidden layer)
     this%h_act = tanh(this%h_z)
     !! weiphted average of second layer
-    this%o_z = matmul(this%o_w, this%act) + this%o_b
+    this%o_z = matmul(this%o_w, this%h_act) + this%o_b
     !! result, with output weights plus bias
     this%o_act = tanh(this%o_z)
   end subroutine feed_forward

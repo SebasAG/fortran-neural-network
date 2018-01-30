@@ -9,7 +9,7 @@ program neuron1
 
   print *, n1%i_size, n1%h_size, n1%o_size
   call n1%feedf((/1.0, 0.0/))
-  print *, n1%act(1)
+  print *, n1%o_act(1)
 
 !  call save_net_dat
 contains

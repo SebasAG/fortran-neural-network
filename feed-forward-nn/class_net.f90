@@ -4,7 +4,7 @@ module class_net
   type, public :: net
     integer :: i_size, h_size, o_size
     real, allocatable :: h_w(:,:), o_w(:,:), h_b(:), o_b(:), &
-      h_z(:), act(:), d_act(:), res(:)
+      h_z(:), o_z, h_act(:), o_act(:)
   contains
     procedure :: init => init_net
     procedure :: feedf => feed_forward
@@ -32,9 +32,9 @@ contains
     allocate(this%o_b(o))
 
     allocate(this%h_z(h))
-    allocate(this%act(h))
-    allocate(this%d_act(h))
-    allocate(this%res(o))
+    allocate(this%o_z(o))
+    allocate(this%h_act(h))
+    allocate(this%o_act(o))
 
     !! initialize weights and bias with random values in [0,1)
     !! to do: initialize with gaussian distribution
@@ -52,9 +52,11 @@ contains
     !! weighted average of inputs plus bias
     this%h_z = matmul(this%h_w, inputs) + this%h_b
     !! apply activation function (hidden layer)
-    this%act = tanh(this%h_z)
+    this%h_act = tanh(this%h_z)
+    !! weiphted average of second layer
+    this%o_z = matmul(this%o_w, this%act) + this%o_b
     !! result, with output weights plus bias
-    this%res = matmul(this%o_w, this%act) + this%o_b
+    this%o_act = tanh(this%o_z)
   end subroutine feed_forward
 
   subroutine net_learn(this, inputs, expected)
@@ -65,7 +67,7 @@ contains
     integer :: i
 
     call this%feedf(inputs)
-    error = expected - this%res
+    error = expected - this%o_act
 
     !! print error for debug
     print '(*(f10.6))', (error(i), i = 1, this%o_size)

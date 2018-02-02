@@ -9,8 +9,6 @@ module class_net
     procedure :: init => init_net
     procedure :: feedf => feed_forward
     procedure :: learn => net_learn
-    procedure :: act => net_act
-    procedure :: d_act => net_dact
   end type net
 
 contains
@@ -46,21 +44,19 @@ contains
     call random_number(this%o_b)
   end subroutine init_net
 
-  function net_act(this, z) result(act)
-    class(net), intent(in) :: this
+  function act(z)
     real, dimension(:), intent(in) :: z
     real, dimension(size(z)) :: act
     act = tanh(z)
     ! act = 1.0 / (1 - exp(-1*z))
-  end function net_act
+  end function act
 
-  function net_dact(this, a) result(d_act)
-    class(net), intent(in) :: this
+  function d_act(a)
     real, dimension(:), intent(in) :: a
     real, dimension(size(a)) :: d_act
     d_act = (1 - a*a)
     ! d_act = a*(1 - a)
-  end function net_dact
+  end function d_act
 
   subroutine feed_forward(this, inputs)
   !! feed forward algorithm
@@ -70,11 +66,11 @@ contains
     !! weighted average of inputs plus bias
     this%h_z = matmul(this%h_w, inputs) + this%h_b
     !! apply activation function (hidden layer)
-    this%h_act = this%act(this%h_z)
+    this%h_act = act(this%h_z)
     !! weiphted average of second layer
     this%o_z = matmul(this%o_w, this%h_act) + this%o_b
     !! result, with output weights plus bias
-    this%o_act = this%act(this%o_z)
+    this%o_act = act(this%o_z)
   end subroutine feed_forward
 
   subroutine net_learn(this, inputs, expected)

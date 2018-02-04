@@ -84,15 +84,22 @@ contains
     this%o_act = act(this%o_z)
   end subroutine feed_forward
 
+  function outer_product(a, b)
+    real, dimension(:), intent(in) :: a, b
+    real, dimension(size(a), size(b)) :: outer_product
+    outer_product = matmul(&
+      reshape(a, (/size(a), 1/)),&
+      reshape(b, (/1, size(b)/))&
+    )
+  end function outer_product
+
   function net_learn(this, inputs, expected) result(err2)
   !! learning algorithme from inputs and expected outputs
     class(net), intent(inout) :: this
     real, intent(in) :: inputs(this%i_size), expected(this%o_size)
     real, dimension(this%o_size) :: error, o_del
     real, dimension(this%h_size) :: h_del
-    real :: dh_w(this%h_size,this%i_size), dh_b(this%h_size), &
-      do_h(this%o_size,this%h_size), do_b(this%o_size), &
-      dh_act(this%h_size), do_act(this%o_size)
+    real :: dh_act(this%h_size), do_act(this%o_size)
     real :: err2
 
     call this%feedf(inputs)
@@ -104,9 +111,9 @@ contains
 
     !! outer to inner nodes
     this%o_b = this%o_b + o_del
-    this%o_w = this%o_w + matmul(reshape(o_del, (/this%o_size,1/)), reshape(this%h_act, (/1,this%h_size/)))
+    this%o_w = this%o_w + outer_product(o_del, this%h_act)
     this%h_b = this%h_b + h_del
-    this%h_w = this%h_w + matmul(reshape(h_del, (/this%h_size,1/)), reshape(inputs, (/1,this%i_size/)))
+    this%h_w = this%h_w + outer_product(h_del, inputs)
 
   err2 = dot_product(error, error)
   end function net_learn

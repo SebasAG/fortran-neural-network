@@ -24,26 +24,5 @@ program neuron1
       + n1%learn((/0.0,0.0/), (/0.0/))
     print *, err2(i)
   enddo
-contains
-  
-  subroutine save_net_dat
-  !! save network data to a file 'n_data.dat'
-    integer, parameter :: n_dat=1
-    integer :: i, j
-    open(n_dat, file='n_data.dat')
-  10 format (*(f10.6, 1x))
-  20 format (/ *(f10.6, 1x))
-
-    do i = 1, n1%i_size
-      write(n_dat, 10) (n1%h_w(j, i), j = 1, h_size)
-    enddo
-    write(n_dat, 20) (n1%h_b(i), i = 1, h_size)
-
-    write(n_dat, '(A, $)') new_line('a')
-    do i = 1, n1%h_size
-      write(n_dat, 10) (n1%o_w(j, i), j = 1, o_size)
-    enddo
-    write(n_dat, 20) (n1%o_b(i), i = 1, o_size)
-  end subroutine save_net_dat
 end program neuron1
 

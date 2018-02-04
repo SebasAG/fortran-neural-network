@@ -1,4 +1,5 @@
 *.o
 *.mod
+*.dat
 feed-forward-nn/2layer-nn
 

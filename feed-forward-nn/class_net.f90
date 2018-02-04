@@ -58,15 +58,15 @@ contains
   function act(z)
     real, dimension(:), intent(in) :: z
     real, dimension(size(z)) :: act
-    act = tanh(z)
-    ! act = 1.0 / (1 - exp(-1*z))
+    ! act = tanh(z)
+    act = 1.0 / (1 - exp(-1*z))
   end function act
 
   function d_act(a)
     real, dimension(:), intent(in) :: a
     real, dimension(size(a)) :: d_act
-    d_act = (1 - a*a)
-    ! d_act = a*(1 - a)
+    ! d_act = (1 - a*a)
+    d_act = a*(1 - a)
   end function d_act
 
   subroutine feed_forward(this, inputs)

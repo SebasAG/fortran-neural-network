@@ -26,7 +26,15 @@ program neuron1
     write (1,*) err2
   enddo
   close(1)
-
   call system('gnuplot -p error.plt')
+
+  call n1%feedf((/0.0, 0.0/))
+  print *, '0,0: ', n1%o_act
+  call n1%feedf((/0.0, 1.0/))
+  print *, '0,1: ', n1%o_act
+  call n1%feedf((/1.0, 0.0/))
+  print *, '1,0: ', n1%o_act
+  call n1%feedf((/1.0, 1.0/))
+  print *, '1,1: ', n1%o_act
 end program neuron1
 

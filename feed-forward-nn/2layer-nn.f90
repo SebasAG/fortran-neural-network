@@ -5,7 +5,7 @@ program neuron1
   integer, parameter :: i_size=2, h_size=2, o_size=1
   type(net) :: n1
 
-  integer, parameter :: samples = 100
+  integer, parameter :: samples = 500
   real :: err2
   integer :: i
 

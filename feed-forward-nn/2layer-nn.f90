@@ -5,7 +5,13 @@ program neuron1
   integer, parameter :: i_size=2, h_size=2, o_size=1
   type(net) :: n1
 
-  call n1%init(i_size, h_size, o_size)
+  integer, dimension(:), allocatable :: seed
+  integer :: seed_size
+  call random_seed(size=seed_size)
+  allocate(seed(seed_size))
+  seed = 1
+
+  call n1%init(i_size, h_size, o_size, seed=seed)
 
   print *, n1%i_size, n1%h_size, n1%o_size
   call n1%feedf((/1.0, 0.0/))

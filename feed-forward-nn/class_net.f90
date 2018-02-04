@@ -12,13 +12,14 @@ module class_net
   end type net
 
 contains
-  subroutine init_net(this, i, h, o)
+  subroutine init_net(this, i, h, o, seed)
   !! initialize the network with
   !!   'i' input nodes, 'h' hidden neurons and 'o' output nodes
   !! to do: implement in the constructor function
   !!   it seems gfortran doesn's support this at the time (?)
     class(net), intent(inout) :: this
     integer, intent(in) :: i, h, o
+    integer, dimension(:), intent(in), optional :: seed
     
     !! set size of network
     this%i_size = i
@@ -35,6 +36,13 @@ contains
     allocate(this%o_z(o))
     allocate(this%h_act(h))
     allocate(this%o_act(o))
+
+    !! set seed for prng
+    if (present(seed)) then
+      call random_seed(put=seed)
+    else
+      call random_seed()
+    endif
 
     !! initialize weights and bias with random values in [0,1)
     !! to do: initialize with gaussian distribution

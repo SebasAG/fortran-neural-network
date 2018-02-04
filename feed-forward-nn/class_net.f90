@@ -3,6 +3,7 @@ module class_net
 
   type, public :: net
     integer :: i_size, h_size, o_size
+    real :: lrate
     real, allocatable :: h_w(:,:), o_w(:,:), h_b(:), o_b(:), &
       h_z(:), o_z(:), h_act(:), o_act(:)
   contains
@@ -12,19 +13,21 @@ module class_net
   end type net
 
 contains
-  subroutine init_net(this, i, h, o, seed)
+  subroutine init_net(this, i, h, o, lrate, seed)
   !! initialize the network with
   !!   'i' input nodes, 'h' hidden neurons and 'o' output nodes
   !! to do: implement in the constructor function
   !!   it seems gfortran doesn's support this at the time (?)
     class(net), intent(inout) :: this
     integer, intent(in) :: i, h, o
+    real, intent(in) :: lrate
     integer, dimension(:), intent(in), optional :: seed
     
-    !! set size of network
+    !! set size and learning rate of network
     this%i_size = i
     this%h_size = h
     this%o_size = o
+    this%lrate = lrate
 
     !! allocate memory for weights and biases according to size
     allocate(this%h_w(h, i))
@@ -86,6 +89,8 @@ contains
     class(net), intent(inout) :: this
     real, intent(in) :: inputs(this%i_size), expected(this%o_size)
     real, dimension(this%o_size) :: error
+    real :: dh_w(this%h_size,this%i_size), dh_b(this%h_size), &
+      do_h(this%o_size,this%h_size), do_b(this%o_size)
     integer :: i
 
     call this%feedf(inputs)

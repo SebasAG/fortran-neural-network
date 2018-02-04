@@ -88,16 +88,28 @@ contains
   !! learning algorithme from inputs and expected outputs
     class(net), intent(inout) :: this
     real, intent(in) :: inputs(this%i_size), expected(this%o_size)
-    real, dimension(this%o_size) :: error
+    real, dimension(this%o_size) :: error, o_del
+    real, dimension(this%h_size) :: h_del
     real :: dh_w(this%h_size,this%i_size), dh_b(this%h_size), &
-      do_h(this%o_size,this%h_size), do_b(this%o_size)
+      do_h(this%o_size,this%h_size), do_b(this%o_size), &
+      dh_act(this%h_size), do_act(this%o_size)
     integer :: i
 
     call this%feedf(inputs)
-    error = expected - this%o_act
+    error = this%lrate*(expected - this%o_act)
+    dh_act = d_act(this%h_act)
+    do_act = d_act(this%o_act)
+    o_del = error * do_act
+    h_del = matmul(o_del, this%o_w)
+
+    !! outer to inner nodes
+    this%o_b = this%o_b + o_del
+    this%o_w = this%o_w + matmul(reshape(o_del, (/this%o_size,1/)), reshape(this%h_act, (/1,this%h_size/)))
+    this%h_b = this%h_b + h_del
+    this%h_w = this%h_w + matmul(reshape(h_del, (/this%h_size,1/)), reshape(inputs, (/1,this%i_size/)))
 
     !! print error for debug
-    print '(*(f10.6))', (error(i), i = 1, this%o_size)
+    ! print '(*(f10.6))', (error(i), i = 1, this%o_size)
   end subroutine net_learn
 end module class_net
 

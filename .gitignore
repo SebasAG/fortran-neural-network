@@ -1,5 +1,7 @@
 *.o
 *.mod
 *.dat
+*.plt
+*.png
 feed-forward-nn/2layer-nn
 

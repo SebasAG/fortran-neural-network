@@ -25,5 +25,8 @@ program neuron1
       + n1%learn((/0.0,0.0/), (/0.0/))
     write (1,*) err2
   enddo
+  close(1)
+
+  call system('gnuplot -p error.plt')
 end program neuron1
 

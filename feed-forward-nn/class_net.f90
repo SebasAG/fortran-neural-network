@@ -84,7 +84,7 @@ contains
     this%o_act = act(this%o_z)
   end subroutine feed_forward
 
-  subroutine net_learn(this, inputs, expected)
+  function net_learn(this, inputs, expected) result(err2)
   !! learning algorithme from inputs and expected outputs
     class(net), intent(inout) :: this
     real, intent(in) :: inputs(this%i_size), expected(this%o_size)
@@ -93,13 +93,13 @@ contains
     real :: dh_w(this%h_size,this%i_size), dh_b(this%h_size), &
       do_h(this%o_size,this%h_size), do_b(this%o_size), &
       dh_act(this%h_size), do_act(this%o_size)
-    integer :: i
+    real :: err2
 
     call this%feedf(inputs)
-    error = this%lrate*(expected - this%o_act)
+    error = expected - this%o_act
     dh_act = d_act(this%h_act)
     do_act = d_act(this%o_act)
-    o_del = error * do_act
+    o_del = this%lrate * error * do_act
     h_del = matmul(o_del, this%o_w)
 
     !! outer to inner nodes
@@ -108,8 +108,7 @@ contains
     this%h_b = this%h_b + h_del
     this%h_w = this%h_w + matmul(reshape(h_del, (/this%h_size,1/)), reshape(inputs, (/1,this%i_size/)))
 
-    !! print error for debug
-    ! print '(*(f10.6))', (error(i), i = 1, this%o_size)
-  end subroutine net_learn
+  err2 = dot_product(error, error)
+  end function net_learn
 end module class_net
 

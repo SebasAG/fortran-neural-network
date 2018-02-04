@@ -17,7 +17,7 @@ program neuron1
   call n1%feedf((/1.0, 0.0/))
   print *, n1%o_act(1)
 
-  call n1%learn((/1.0, 0.0/), (/1.0/))
+  print *, n1%learn((/1.0, 0.0/), (/1.0/))
 
 !  call save_net_dat
 contains

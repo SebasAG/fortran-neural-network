@@ -20,7 +20,7 @@ contains
   !!   it seems gfortran doesn's support this at the time (?)
     class(net), intent(inout) :: this
     integer, intent(in) :: i, h, o
-    real, intent(in) :: lrate
+    real, intent(in), optional :: lrate
     integer, dimension(:), intent(in), optional :: seed
     
     !! set size and learning rate of network
@@ -92,8 +92,8 @@ contains
     real, dimension(:), intent(in) :: a, b
     real, dimension(size(a), size(b)) :: outer_product
     outer_product = matmul(&
-      reshape(a, (/size(a), 1/)),&
-      reshape(b, (/1, size(b)/))&
+      reshape(a, [size(a), 1]),&
+      reshape(b, [1, size(b)])&
     )
   end function outer_product
 
@@ -103,7 +103,7 @@ contains
     real, intent(in) :: inputs(this%i_size), expected(this%o_size)
     real, dimension(this%o_size) :: error, o_del, do_act
     real, dimension(this%h_size) :: h_del, dh_act
-    real, intent(out) :: err2
+    real :: err2
 
     call this%feedf(inputs)
     error = expected - this%o_act

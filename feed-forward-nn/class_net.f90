@@ -53,10 +53,10 @@ contains
     call random_number(this%o_w)
     call random_number(this%o_b)
 
-    this%h_w = (this%h_w*2 - 1)/sqrt(real(this%h_size))
-    this%h_b = this%h_b*2 - 1
-    this%o_w = (this%o_w*2 - 1)/sqrt(real(this%o_size))
-    this%o_b = this%o_b*2 - 1
+    this%h_w = (this%h_w - 0.5)/sqrt(real(this%h_size))
+    this%h_b = this%h_b - 0.5
+    this%o_w = (this%o_w - 0.5)/sqrt(real(this%o_size))
+    this%o_b = this%o_b - 0.5
   end subroutine init_net
 
   function act(z)

@@ -6,8 +6,8 @@ program neuron1
   type(net) :: n1
 
   integer, parameter :: samples = 10000
-  real :: err, e1, e2, e3, e4
-  integer :: i
+  real :: err, e1, e2, e3, e4, inp(2)
+  integer :: i, j
 
   integer, dimension(:), allocatable :: seed
   integer :: seed_size
@@ -25,19 +25,22 @@ program neuron1
     e4 = n1%learn([0.0,0.0], [0.0])
     err = e1 + e2 + e3 + e4
     if (modulo(i, 50) == 0) then
-      write (1,*) i, err
+      write (1, '(i5,1x,f10.8)') i, err
     endif
   enddo
   close(1)
-  call system('gnuplot -p i_error.plt')
 
-  call n1%feedf((/0.0, 0.0/))
-  print *, '0,0: ', n1%o_act
-  call n1%feedf((/0.0, 1.0/))
-  print *, '0,1: ', n1%o_act
-  call n1%feedf((/1.0, 0.0/))
-  print *, '1,0: ', n1%o_act
-  call n1%feedf((/1.0, 1.0/))
-  print *, '1,1: ', n1%o_act
+  open(2, file="i_result.dat")
+  do i = 0, 20
+    do j = 0, 20
+      inp = [i, j]*0.05
+      call n1%feedf(inp)
+      write(2, '(3(f10.8,1x))') inp(1), inp(2), n1%o_act(1)
+    enddo
+    write(2, '(A,$)') new_line('a')
+  enddo
+  close(2)
+
+  call system('gnuplot -p i_error.plt')
 end program neuron1
 

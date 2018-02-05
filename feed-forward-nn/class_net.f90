@@ -47,12 +47,16 @@ contains
       call random_seed()
     endif
 
-    !! initialize weights and bias with random values in [0,1)
-    !! to do: initialize with gaussian distribution
+    !! initialize weights and bias with random values in [-1,1)
     call random_number(this%h_w)
     call random_number(this%h_b)
     call random_number(this%o_w)
     call random_number(this%o_b)
+
+    this%h_w = (this%h_w*2 - 1)/sqrt(real(this%h_size))
+    this%h_b = this%h_b*2 - 1
+    this%o_w = (this%o_w*2 - 1)/sqrt(real(this%o_size))
+    this%o_b = this%o_b*2 - 1
   end subroutine init_net
 
   function act(z)
@@ -97,10 +101,9 @@ contains
   !! learning algorithme from inputs and expected outputs
     class(net), intent(inout) :: this
     real, intent(in) :: inputs(this%i_size), expected(this%o_size)
-    real, dimension(this%o_size) :: error, o_del
-    real, dimension(this%h_size) :: h_del
-    real :: dh_act(this%h_size), do_act(this%o_size)
-    real :: err2
+    real, dimension(this%o_size) :: error, o_del, do_act
+    real, dimension(this%h_size) :: h_del, dh_act
+    real, intent(out) :: err2
 
     call this%feedf(inputs)
     error = expected - this%o_act
@@ -110,12 +113,12 @@ contains
     h_del = matmul(o_del, this%o_w)
 
     !! outer to inner nodes
-    this%o_b = this%o_b + o_del
-    this%o_w = this%o_w + outer_product(o_del, this%h_act)
-    this%h_b = this%h_b + h_del
-    this%h_w = this%h_w + outer_product(h_del, inputs)
+    this%o_b = this%o_b - o_del
+    this%o_w = this%o_w - outer_product(o_del, this%h_act)
+    this%h_b = this%h_b - h_del
+    this%h_w = this%h_w - outer_product(h_del, inputs)
 
-  err2 = dot_product(error, error)
+    err2 = dot_product(error, error)
   end function net_learn
 end module class_net
 

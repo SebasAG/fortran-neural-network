@@ -15,7 +15,7 @@ program neuron1
   allocate(seed(seed_size))
   seed = 1
 
-  call n1%init(i_size, h_size, o_size, 0.5, seed=seed)
+  call n1%init(i_size, h_size, o_size, 0.1, seed=seed)
 
   open(1, file="error.dat")
   do i = 1, samples
@@ -25,7 +25,7 @@ program neuron1
     e4 = n1%learn((/0.0,0.0/), (/0.0/))
     err = e1 + e2 + e3 + e4
     write (1,*) err
-    if(modulo(i, 5) == 0) then
+    if(modulo(i, 10) == 0) then
       print *, e4, e3, e2, e1
     endif
   enddo

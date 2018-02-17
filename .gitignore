@@ -1,5 +1,9 @@
+*.swp
+
 *.o
 *.mod
 i_*
 feed-forward-nn/2layer-nn
+
+*.pdf
 
